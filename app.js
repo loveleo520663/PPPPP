@@ -186,7 +186,7 @@ app.get('/', (req, res) => {
     ${style}
     <div class="container">
       <div class="topbar">
-        <div class="topbar-left">科技股份有限公司</div>
+        <div class="topbar-left">益信國際</div>
         <div class="topbar-right"></div>
       </div>
       <h1>會員登入</h1>
@@ -218,7 +218,7 @@ app.post('/login', async (req, res) => {
       res.send(`
         ${style}
         <div class="container">
-          <h1>科技股份有限公司</h1>
+          <h1>益信國際</h1>
           <p class="error">此帳號已被停用</p>
           <a href="/">回登入</a>
         </div>
@@ -230,7 +230,7 @@ app.post('/login', async (req, res) => {
       res.send(`
         ${style}
         <div class="container">
-          <h1>科技股份有限公司</h1>
+          <h1>益信國際</h1>
           <p class="error">密碼錯誤</p>
           <a href="/">回登入</a>
         </div>
@@ -255,7 +255,7 @@ app.get('/dashboard', (req, res) => {
   res.send(`
     ${style}
 <div class="topbar">
-  <div class="topbar-left">科技股份有限公司</div>
+  <div class="topbar-left">益信國際</div>
   <div class="topbar-right">
     ${req.session.user ? `
       <span class="user-account">${req.session.user.username}</span>

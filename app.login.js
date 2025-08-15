@@ -375,8 +375,8 @@ app.get('/', (req, res) => {
             <label><input type="checkbox" name="stealth"> 智慧隱匿反偵測</label>
           </div>
           <div class="info-box">
-            <div>我的所在IP位置<br><b>${ip}</b></div>
-            <div style="margin-top:8px;">設備類型<br><b>${deviceType}</b></div>
+            <div>所在IP位置<br><b>${ip}</b></div>
+            <div style="margin-top:8px;">設備類型<br><b>${deviceType === '電腦設備' ? 'PC' : deviceType}</b></div>
             <div style="margin-top:8px;">設備序列號<br><b>${deviceId}</b></div>
           </div>
           <button id="injectBtn" class="disabled-btn" disabled>開始注入</button>

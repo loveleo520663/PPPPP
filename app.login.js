@@ -173,6 +173,7 @@ app.get('/', (req, res) => {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
       <title>TF電子老虎機機台檢測</title>
+      <link rel="icon" type="image/png" href="/slot777.png">
       <style>
         body {
           font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;

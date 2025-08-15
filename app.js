@@ -259,6 +259,20 @@ app.post('/login', (req, res) => {
   });
 });
 
+// session 狀態檢查 API
+app.get('/session-check', (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
+  db.get('SELECT session_id FROM users WHERE username = ?', [req.session.user.username], (err, row) => {
+    if (!row || row.session_id !== req.session.user.session_id) {
+      req.session.destroy(() => {
+        res.sendStatus(401);
+      });
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
 // 功能頁（需登入）
 app.get('/dashboard', (req, res) => {
   if (!req.session.user) return res.redirect('/');
@@ -307,35 +321,34 @@ app.get('/dashboard', (req, res) => {
       <div class="card-value target-rate" id="targetRate">尚未注入</div>
       <div class="card-diff" id="targetDiff"></div>
     </div>
-    <div class="card">
-      <div class="card-title">後台運算時間</div>
-      <div class="card-value time-rate" id="timeRate">尚未注入</div>
-      <div class="card-diff" id="timeDiff"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">成功率</div>
-      <div class="card-value success-rate" id="successRate">尚未注入</div>
-      <div class="card-diff" id="successDiff"></div>
-    </div>
+  <div class="card">
+    <div class="card-title">後台運算時間</div>
+    <div class="card-value time-rate" id="timeRate">尚未注入</div>
+    <div class="card-diff" id="timeDiff"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">成功率</div>
+    <div class="card-value success-rate" id="successRate">尚未注入</div>
+    <div class="card-diff" id="successDiff"></div>
   </div>
 </div>
-        <div style="margin-bottom:8px;">
-          <label>選擇遊戲：</label>
-          <select name="game">
-            <option>雷神之錘</option>
-            <option>戰神呂布</option>
-            <option>戰神賽特</option>
-            <option>魔龍之戰</option>
-          </select>
-        </div>
-                <div style="margin-bottom:8px;">
-          <label>選擇平台：</label>
-          <select name="platform">
-            <option>RSG電子</option>
-            <option>ATG電子</option>
-          </select>
-        </div>
-        <div style="margin-bottom:8px;">
+<div style="margin-bottom:8px;">
+  <label>選擇遊戲：</label>
+  <select name="game">
+    <option>雷神之錘</option>
+    <option>戰神呂布</option>
+    <option>戰神賽特</option>
+    <option>魔龍之戰</option>
+  </select>
+</div>
+<div style="margin-bottom:8px;">
+  <label>選擇平台：</label>
+  <select name="platform">
+    <option>RSG電子</option>
+    <option>ATG電子</option>
+  </select>
+</div>
+<div style="margin-bottom:8px;">
 </div>
 <div style="margin-bottom:8px;">
   <label>請輸入機台台號：</label>
@@ -471,6 +484,7 @@ app.get('/dashboard', (req, res) => {
 </script>
   `);
 });
+}); // 補上 dashboard callback 結尾
 
 // 登出
 app.get('/logout', (req, res) => {
@@ -524,6 +538,7 @@ app.post('/inject', (req, res) => {
           <div class="card-diff">${randDiff()}</div>
         </div>
       </div>
+
     `);
   }, waitSeconds * 1000);
 });

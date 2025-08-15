@@ -546,8 +546,8 @@ app.get('/', (req, res) => {
                     base = cache.base;
                     target = cache.target;
                   } else {
-                    base = Math.floor(Math.random()*60)+8; // 8~67
-                    target = Math.floor(Math.random()*61)+10; // 10~70
+                    base = Math.floor(Math.random()*21)+10; // 10~30
+                    target = Math.floor(Math.random()*40)+1; // 1~40
                     machineCache[cacheKey] = {base,target,time:now};
                   }
                   // 計算整體推薦

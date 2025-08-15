@@ -212,7 +212,11 @@ app.post('/login', async (req, res) => {
     if (!row) {
       res.send(`
         ${style}
-  </div>
+        <div class="container">
+          <h1>益信國際</h1>
+          <p class="error">帳號不存在</p>
+          <a href="/">回登入</a>
+        </div>
       `);
     } else if (row.active === 0) {
       res.send(`

@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const session = require('express-session');
 const app = express();
 const port = 3000;
+const crypto = require('crypto');
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -17,8 +18,14 @@ app.use(session({
 // 建立資料庫
 const db = new sqlite3.Database('./users.db');
 
-// 建立 users 資料表
-db.run('CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT, active INTEGER DEFAULT 1)');
+// 建立 users 資料表，新增 session_id 欄位
+db.run('CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, password TEXT, active INTEGER DEFAULT 1, session_id TEXT)');
+// 確保 session_id 欄位存在（舊資料庫升級）
+db.all("PRAGMA table_info(users)", (err, columns) => {
+  if (!columns.some(col => col.name === 'session_id')) {
+    db.run('ALTER TABLE users ADD COLUMN session_id TEXT');
+  }
+});
 
 // CSS 樣式
 const style = `
@@ -206,9 +213,9 @@ app.get('/', (req, res) => {
 });
 
 // 處理登入
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
+  db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
     if (!row) {
       res.send(`
         ${style}
@@ -227,18 +234,27 @@ app.post('/login', async (req, res) => {
           <a href="/">回登入</a>
         </div>
       `);
-    } else if (await bcrypt.compare(password, row.password)) {
-      req.session.user = { username: row.username };
-      res.redirect('/dashboard');
     } else {
-      res.send(`
-        ${style}
-        <div class="container">
-          <h1>益信國際</h1>
-          <p class="error">密碼錯誤</p>
-          <a href="/">回登入</a>
-        </div>
-      `);
+      bcrypt.compare(password, row.password).then(match => {
+        if (match) {
+          // 產生新的 session id
+          const newSessionId = crypto.randomBytes(24).toString('hex');
+          req.session.user = { username: row.username, session_id: newSessionId };
+          // 寫入資料庫
+          db.run('UPDATE users SET session_id = ? WHERE username = ?', [newSessionId, row.username], (err) => {
+            res.redirect('/dashboard');
+          });
+        } else {
+          res.send(`
+            ${style}
+            <div class="container">
+              <h1>益信國際</h1>
+              <p class="error">密碼錯誤</p>
+              <a href="/">回登入</a>
+            </div>
+          `);
+        }
+      });
     }
   });
 });
@@ -246,18 +262,27 @@ app.post('/login', async (req, res) => {
 // 功能頁（需登入）
 app.get('/dashboard', (req, res) => {
   if (!req.session.user) return res.redirect('/');
-  const ip =
-    req.headers['x-forwarded-for']?.split(',')[0] ||
-    req.connection?.remoteAddress ||
-    req.socket?.remoteAddress ||
-    req.ip;
-  const ua = req.headers['user-agent'];
+  // 驗證 session_id 是否一致
+  db.get('SELECT session_id FROM users WHERE username = ?', [req.session.user.username], (err, row) => {
+    if (!row || row.session_id !== req.session.user.session_id) {
+      // session 不一致，強制登出
+      req.session.destroy(() => {
+        res.redirect('/');
+      });
+      return;
+    }
+    const ip =
+      req.headers['x-forwarded-for']?.split(',')[0] ||
+      req.connection?.remoteAddress ||
+      req.socket?.remoteAddress ||
+      req.ip;
+    const ua = req.headers['user-agent'];
     let deviceType = 'PC';
-  if (/android|iphone|ipad|mobile/i.test(ua)) {
-    deviceType = '手機';
-  }
-  res.send(`
-    ${style}
+    if (/android|iphone|ipad|mobile/i.test(ua)) {
+      deviceType = '手機';
+    }
+    res.send(`
+      ${style}
 <div class="topbar">
   <div class="topbar-left">益信國際</div>
   <div class="topbar-right">
@@ -449,9 +474,18 @@ app.get('/dashboard', (req, res) => {
 
 // 登出
 app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/');
-  });
+  if (req.session.user) {
+    // 清空資料庫 session_id
+    db.run('UPDATE users SET session_id = NULL WHERE username = ?', [req.session.user.username], () => {
+      req.session.destroy(() => {
+        res.redirect('/');
+      });
+    });
+  } else {
+    req.session.destroy(() => {
+      res.redirect('/');
+    });
+  }
 });
 
 // 注入功能（AJAX更新表格）

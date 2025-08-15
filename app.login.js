@@ -530,7 +530,10 @@ app.get('/', (req, res) => {
                 setStepStatus(cur-1,'done');
                 setTimeout(function(){
                   progressModal.style.display='none';
-                  window.scrollTo({top:0,behavior:'smooth'});
+                  // 僅桌機自動滾動到頂，手機不滾動
+                  if(window.innerWidth > 600) {
+                    window.scrollTo({top:0,behavior:'smooth'});
+                  }
                   // 取得機台號
                   var machineId = document.getElementById('machineId');
                   var cacheKey = '';

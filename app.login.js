@@ -32,6 +32,17 @@ app.get('/login', (req, res) => {
   res.send(`
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
+    #particles-js {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0;
+}
+.main-bg, .main-container {
+  position: relative;
+  z-index: 1;
+}
+
+<div id="particles-js"></div>
       body {
         font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
         background: #18191a;
@@ -327,7 +338,7 @@ app.get('/', (req, res) => {
             <form method="GET" action="/logout" style="display:inline;"><button class="logout-btn">登出</button></form>
           </div>
           <div class="card">
-            <div class="card-title">Legendary中獎率</div>
+            <div class="card-title">平轉中獎率</div>
             <div class="card-value base"><span id="baseRate">尚未注入</span><span class="unit">%</span></div>
           </div>
           <div class="card">
@@ -549,7 +560,7 @@ app.get('/', (req, res) => {
                     base = cache.base;
                     target = cache.target;
                   } else {
-                    base = Math.floor(Math.random()*8)+1; // 1~8
+                    base = Math.floor(Math.random()*21)+10; // 10~30
                     target = Math.floor(Math.random()*40)+1; // 1~40
                     machineCache[cacheKey] = {base,target,time:now};
                   }
@@ -582,7 +593,33 @@ app.get('/', (req, res) => {
           style.innerHTML = '@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
           document.head.appendChild(style);
         });
-      </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 60, density: { enable: true, value_area: 800 } },
+      color: { value: '#FFD700' },
+      shape: { type: 'circle' },
+      opacity: { value: 0.18, random: true },
+      size: { value: 3, random: true },
+      line_linked: { enable: true, distance: 120, color: '#FFD700', opacity: 0.12, width: 1 },
+      move: { enable: true, speed: 1.2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: {
+        onhover: { enable: true, mode: 'repulse' },
+        onclick: { enable: false },
+        resize: true
+      },
+      modes: {
+        repulse: { distance: 80, duration: 0.4 }
+      }
+    },
+    retina_detect: true
+  });
+</script>
     </body>
     </html>
   `);

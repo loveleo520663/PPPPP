@@ -32,17 +32,6 @@ app.get('/login', (req, res) => {
   res.send(`
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
-    #particles-js {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  z-index: 0;
-}
-.main-bg, .main-container {
-  position: relative;
-  z-index: 1;
-}
-
-<div id="particles-js"></div>
       body {
         font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
         background: #18191a;
@@ -565,12 +554,14 @@ app.get('/', (req, res) => {
                     machineCache[cacheKey] = {base,target,time:now};
                   }
                   // 計算整體推薦
-                  var total = base + target;
-                  if(total > 60) {
-                    success = Math.floor(Math.random()*21)+60; // 60~80
-                  } else {
-                    success = Math.floor(Math.random()*41)+20; // 20~60
-                  }
+var total = base + target;
+if(total > 40) {
+  success = Math.floor(Math.random()*21)+60; // 60~80
+} else if(total <= 25) {
+  success = Math.floor(Math.random()*41)+20; // 20~60
+} else {
+  success = Math.floor(Math.random()*41)+20; // 20~60
+}
                   var t1 = Date.now();
                   var sec = ((t1-t0)/1000).toFixed(2);
                   animateNumber('baseRate', base, '%');
@@ -593,33 +584,7 @@ app.get('/', (req, res) => {
           style.innerHTML = '@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}';
           document.head.appendChild(style);
         });
-
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.js"></script>
-<script>
-  particlesJS('particles-js', {
-    particles: {
-      number: { value: 60, density: { enable: true, value_area: 800 } },
-      color: { value: '#FFD700' },
-      shape: { type: 'circle' },
-      opacity: { value: 0.18, random: true },
-      size: { value: 3, random: true },
-      line_linked: { enable: true, distance: 120, color: '#FFD700', opacity: 0.12, width: 1 },
-      move: { enable: true, speed: 1.2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-    },
-    interactivity: {
-      detect_on: 'canvas',
-      events: {
-        onhover: { enable: true, mode: 'repulse' },
-        onclick: { enable: false },
-        resize: true
-      },
-      modes: {
-        repulse: { distance: 80, duration: 0.4 }
-      }
-    },
-    retina_detect: true
-  });
-</script>
+      </script>
     </body>
     </html>
   `);

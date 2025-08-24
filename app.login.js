@@ -27,7 +27,7 @@ function getDeviceId() {
   return crypto.randomBytes(18).toString('base64').replace(/\+/g, 'A').replace(/\//g, 'B');
 }
 
-// 登入頁面
+// 登入頁面3
 app.get('/login', (req, res) => {
   res.send(`
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -554,14 +554,12 @@ app.get('/', (req, res) => {
                     machineCache[cacheKey] = {base,target,time:now};
                   }
                   // 計算整體推薦
-var total = base + target;
-if(total > 40) {
-  success = Math.floor(Math.random()*21)+60; // 60~80
-} else if(total <= 25) {
-  success = Math.floor(Math.random()*41)+20; // 20~60
-} else {
-  success = Math.floor(Math.random()*41)+20; // 20~60
-}
+                  var total = base + target;
+                  if(total > 60) {
+                    success = Math.floor(Math.random()*21)+60; // 60~80
+                  } else {
+                    success = Math.floor(Math.random()*41)+20; // 20~60
+                  }
                   var t1 = Date.now();
                   var sec = ((t1-t0)/1000).toFixed(2);
                   animateNumber('baseRate', base, '%');

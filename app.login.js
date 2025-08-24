@@ -594,7 +594,7 @@ app.get('/', (req, res) => {
           document.head.appendChild(style);
         });
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.js"></script>
 <script>
   particlesJS('particles-js', {
     particles: {

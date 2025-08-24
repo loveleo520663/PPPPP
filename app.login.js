@@ -327,7 +327,7 @@ app.get('/', (req, res) => {
             <form method="GET" action="/logout" style="display:inline;"><button class="logout-btn">登出</button></form>
           </div>
           <div class="card">
-            <div class="card-title">平轉中獎率</div>
+            <div class="card-title">Legendary中獎率</div>
             <div class="card-value base"><span id="baseRate">尚未注入</span><span class="unit">%</span></div>
           </div>
           <div class="card">
@@ -549,7 +549,7 @@ app.get('/', (req, res) => {
                     base = cache.base;
                     target = cache.target;
                   } else {
-                    base = Math.floor(Math.random()*21)+10; // 10~30
+                    base = Math.floor(Math.random()*8)+1; // 1~8
                     target = Math.floor(Math.random()*40)+1; // 1~40
                     machineCache[cacheKey] = {base,target,time:now};
                   }

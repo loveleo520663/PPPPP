@@ -32,6 +32,20 @@ app.get('/login', (req, res) => {
   res.send(`
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
+    .card {
+  background: #18191a;
+  border-radius: 16px;
+  margin-bottom: 28px;
+  padding: 28px 22px;
+  box-shadow: 0 2px 16px #000a;
+  box-sizing: border-box;
+  transition: box-shadow 0.25s, transform 0.18s, background 0.18s;
+}
+.card:hover, .card:active {
+  box-shadow: 0 6px 32px #FFD70055, 0 2px 16px #000a;
+  transform: translateY(-4px) scale(1.025);
+  background: #232c3b;
+}
       body {
         font-family: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
         background: #18191a;
